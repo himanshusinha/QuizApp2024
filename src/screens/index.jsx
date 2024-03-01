@@ -1,0 +1,11 @@
+export {default as SplashScreen} from '../screens/splash/SplashScreen';
+export {default as HomeScreen} from '../screens/dashboard/home/HomeScreen';
+export {default as LeaderBoardScreen} from '../screens/dashboard/leaderboard/LeaderBoardScreen';
+export {default as ProfileScreen} from '../screens/dashboard/profile/ProfileScreen';
+export {default as BottomNavigation} from '../navigation/BottomNavigation';
+export {default as BookmarkScreen} from '../screens/dashboard/bookmark/BookmarkScreen';
+export {default as SettingsScreen} from '../screens/dashboard/settings/SettingsScreen';
+export {default as AboutScreen} from '../screens/dashboard/about/AboutScreen';
+export {default as QuizRulesScreen} from '../screens/dashboard/quizRules/QuizRulesScreen';
+export {default as LoginScreen} from '../screens/auth/login/LoginScreen';
+export {default as SignUpScreen} from '../screens/auth/signup/SignUpScreen';
