@@ -1,0 +1,15 @@
+export default {
+  quiz: require('../assets/images/quiz.png'),
+  dashboard: require('../assets/images/dashboard.png'),
+  house: require('../assets/images/house.png'),
+  user: require('../assets/images/user.png'),
+  menu: require('../assets/images/menu.png'),
+  bookmark: require('../assets/images/bookmark.png'),
+  info: require('../assets/images/info.png'),
+  settings: require('../assets/images/settings.png'),
+  ideas: require('../assets/images/ideas.png'),
+  show: require('../assets/images/show.png'),
+  hide: require('../assets/images/hide.png'),
+  lock: require('../assets/images/lock.png'),
+  google: require('../assets/images/google.png'),
+};
