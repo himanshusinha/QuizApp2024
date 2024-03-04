@@ -11,14 +11,6 @@ const AppNavigation = () => {
         name={routes.SPLASH_SCREEN}
         component={Screens.SplashScreen}
       />
-      <Stack.Screen
-        name={routes.LOGIN_SCREEN}
-        component={Screens.LoginScreen}
-      />
-      <Stack.Screen
-        name={routes.SIGNUP_SCREEN}
-        component={Screens.SignUpScreen}
-      />
     </Stack.Navigator>
   );
 };
