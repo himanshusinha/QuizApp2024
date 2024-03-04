@@ -1,17 +1,29 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import AuthNavigation from './AuthNavigation';
+import auth from '@react-native-firebase/auth';
 import DrawerNavigation from './DrawerNavigation';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import AuthNavigation from './AuthNavigation';
 
-const Stack = createNativeStackNavigator();
+const RoutesNavigation = ({user, setUser}) => {
+  const [initializing, setInitializing] = useState(true);
 
-const RoutesStack = () => {
+  const onAuthStateChanged = user => {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  };
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null;
+
   return (
     <NavigationContainer>
-      {true ? <DrawerNavigation /> : <AuthNavigation />}
+      {user ? <DrawerNavigation /> : <AuthNavigation />}
     </NavigationContainer>
   );
 };
 
-export default RoutesStack;
+export default RoutesNavigation;

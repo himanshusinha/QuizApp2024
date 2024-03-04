@@ -5,8 +5,9 @@ import styles from './styles';
 import {createAnimationLoop} from '../../../src/utils/animation'; // Import the animation function
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
-import routes from '../../constants/routes';
 import images from '../../constants/images';
+import auth from '@react-native-firebase/auth';
+import {StackActions} from '@react-navigation/native';
 
 const SplashScreen = () => {
   const scaleValue = useRef(new Animated.Value(1)).current;
@@ -19,27 +20,33 @@ const SplashScreen = () => {
     const timeoutId = setTimeout(() => {
       loop.stop();
       // Navigate to the next screen after 2 seconds
-      navigation.replace(routes.HOME_SCREEN); // Replace 'NextScreen' with the name of your next screen
-    }, 2000);
+      setTimeout(() => {
+        auth().onAuthStateChanged(user => {
+          const routeName = user !== null ? 'Home' : 'Login';
 
-    return () => {
-      clearTimeout(timeoutId);
-      loop.stop();
-    };
-  }, [scaleValue, navigation]);
+          navigation.dispatch(StackActions.replace(routeName));
+        });
+      }, 2000);
 
-  return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={['#0000FF', '#0047AB', '#00008B']}
-        style={styles.linearGradient}>
-        <Animated.Text
-          style={[styles.text, {transform: [{scale: scaleValue}]}]}>
-          <Image source={images.quiz} style={styles.logo} />
-        </Animated.Text>
-      </LinearGradient>
-    </View>
-  );
+      return () => {
+        clearTimeout(timeoutId);
+        loop.stop();
+      };
+    }, [scaleValue, navigation]);
+
+    return (
+      <View style={styles.container}>
+        <LinearGradient
+          colors={['#0000FF', '#0047AB', '#00008B']}
+          style={styles.linearGradient}>
+          <Animated.Text
+            style={[styles.text, {transform: [{scale: scaleValue}]}]}>
+            <Image source={images.quiz} style={styles.logo} />
+          </Animated.Text>
+        </LinearGradient>
+      </View>
+    );
+  });
 };
 
 export default SplashScreen;

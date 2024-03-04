@@ -12,8 +12,12 @@ const AppNavigation = () => {
         component={Screens.SplashScreen}
       />
       <Stack.Screen
-        name={routes.HOME_SCREEN}
-        component={Screens.BottomNavigation}
+        name={routes.LOGIN_SCREEN}
+        component={Screens.LoginScreen}
+      />
+      <Stack.Screen
+        name={routes.SIGNUP_SCREEN}
+        component={Screens.SignUpScreen}
       />
     </Stack.Navigator>
   );

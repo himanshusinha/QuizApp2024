@@ -1,28 +1,40 @@
 import {FlatList} from 'react-native';
-import React, {useLayoutEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import WrapperContainer from '../../../components/wrapperContainer/WrapperContainer';
 import styles from './styles';
-import {categories} from '../../../constants/list';
-import ItemCategories from '../../../components/list/ItemCategories';
-import {useNavigation} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore'; // Import firestore
+import ItemCategories from '../../../components/list/ItemCategories/ItemCategories';
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'Home',
-    });
-  }, [navigation]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('QUIZ') // Assuming 'QUIZ' is your root collection
+      .onSnapshot(querySnapshot => {
+        const categoriesData = [];
+        querySnapshot.forEach(doc => {
+          // Iterate through the documents in the collection
+          const {NAME, NO_OF_TESTS} = doc.data();
+          categoriesData.push({
+            CAT_ID: doc.id,
+            NAME,
+            NO_OF_TESTS,
+          });
+        });
+        setCategories(categoriesData.filter((item, index) => index !== 0)); // Filter out the item at position 0
+      });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <WrapperContainer style={styles.container}>
       <FlatList
-        showsVerticalScrollIndicator={false}
-        alwaysBounceVertical={false}
         data={categories}
-        renderItem={({item}) => <ItemCategories item={item} />}
-        keyExtractor={item => item.id}
         numColumns={2}
-        contentContainerStyle={styles.flatListContainer}
+        renderItem={({item, index}) => <ItemCategories item={item} />}
+        keyExtractor={item => item.CAT_ID}
       />
     </WrapperContainer>
   );

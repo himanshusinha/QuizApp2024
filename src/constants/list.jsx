@@ -1,32 +1,26 @@
-export const categories = [
+export const test = [
   {
     id: '1',
-    category: 'GK',
-    test: '20 Tests',
+    topscore: '50',
+    time: '20',
+    title: 'Test 1',
   },
   {
     id: '2',
-    category: 'FOOD',
-    test: '20 Tests',
+    topscore: '80',
+    time: '20',
+    title: 'Test 2',
   },
   {
     id: '3',
-    category: 'SCIENCE',
-    test: '25 Tests',
+    topscore: '0',
+    time: '25',
+    title: 'Test 3',
   },
   {
     id: '4',
-    category: 'ENGLISH',
-    test: '10 Tests',
-  },
-  {
-    id: '5',
-    category: 'MATHS',
-    test: '20 Tests',
-  },
-  {
-    id: '6',
-    category: 'HISTORY',
-    test: '30 Tests',
+    topscore: '10',
+    time: '40',
+    title: 'Test 4',
   },
 ];
