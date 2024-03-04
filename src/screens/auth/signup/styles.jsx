@@ -37,10 +37,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: moderateScale(100),
     borderRadius: moderateScale(40),
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.8,
-    shadowRadius: 3.84,
   },
   buttonGoogleContainer: {
     width: '100%',
@@ -48,10 +44,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: moderateScale(10),
     borderRadius: moderateScale(40),
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.8,
-    shadowRadius: 3.84,
   },
   buttonText: {
     color: colors.white,

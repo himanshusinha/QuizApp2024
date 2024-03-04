@@ -12,4 +12,5 @@ export default {
   hide: require('../assets/images/hide.png'),
   lock: require('../assets/images/lock.png'),
   google: require('../assets/images/google.png'),
+  logout: require('../assets/images/logout.png'),
 };

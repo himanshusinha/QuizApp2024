@@ -3,9 +3,9 @@ import {Image} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import colors from '../constants/colors';
 import routes from '../constants/routes';
-import {HomeScreen, LeaderBoardScreen, ProfileScreen} from '../screens';
 import images from '../constants/images';
 import styles from './styles';
+import * as Screens from '../screens';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +22,7 @@ const BottomNavigation = () => {
       }}>
       <Tab.Screen
         name={routes.HOME_SCREEN}
-        component={HomeScreen}
+        component={Screens.HomeScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <Image
@@ -36,7 +36,7 @@ const BottomNavigation = () => {
 
       <Tab.Screen
         name={routes.LEADERBOARD_SCREEN}
-        component={LeaderBoardScreen}
+        component={Screens.LeaderBoardScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <Image
@@ -50,7 +50,7 @@ const BottomNavigation = () => {
 
       <Tab.Screen
         name={routes.PROFILE_SCREEN}
-        component={ProfileScreen}
+        component={Screens.ProfileScreen}
         options={{
           tabBarIcon: ({focused}) => (
             <Image

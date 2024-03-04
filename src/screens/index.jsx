@@ -9,3 +9,4 @@ export {default as AboutScreen} from '../screens/dashboard/about/AboutScreen';
 export {default as QuizRulesScreen} from '../screens/dashboard/quizRules/QuizRulesScreen';
 export {default as LoginScreen} from '../screens/auth/login/LoginScreen';
 export {default as SignUpScreen} from '../screens/auth/signup/SignUpScreen';
+export {default as TestScreen} from '../screens/dashboard/test/TestScreen';

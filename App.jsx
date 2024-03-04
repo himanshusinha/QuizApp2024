@@ -1,8 +1,10 @@
-import React from 'react';
-import RoutesStack from './src/navigation/RoutesNavigation';
+import React, {useState} from 'react';
+import RoutesNavigation from './src/navigation/RoutesNavigation';
 
 const App = () => {
-  return <RoutesStack />;
+  const [user, setUser] = useState(null);
+
+  return <RoutesNavigation user={user} setUser={setUser} />;
 };
 
 export default App;

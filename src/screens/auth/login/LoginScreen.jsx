@@ -1,5 +1,12 @@
-import React from 'react';
-import {View, Image, TouchableOpacity, Text, ScrollView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import {Formik} from 'formik';
 import styles from './styles';
 import colors from '../../../constants/colors';
@@ -11,11 +18,69 @@ import loginValidationSchema from '../../../utils/loginValidationSchema';
 import {useNavigation} from '@react-navigation/native';
 import routes from '../../../constants/routes';
 import SignUpText from '../../../components/signupText/SignUpText';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const LoginScreen = () => {
+  const [info, setInfo] = useState('');
+
+  const [profileImage, setProfileImage] = useState(null);
+
   const navigation = useNavigation();
-  const handleLogin = values => {
-    console.log('Form values:', values);
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '800101377313-0eeda4fr1s9hdk6kmtjbk8lccrdicio4.apps.googleusercontent.com',
+    });
+  }, []);
+
+  const handleLogin = ({email, password}) => {
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(async () => {
+        console.log('User logged in successfully!');
+
+        const user = auth().currentUser;
+        if (user) {
+          await firestore().collection('users').doc(user.uid).set({
+            email: user.email,
+          });
+        }
+      })
+      .catch(error => {
+        if (error.code === 'auth/user-not-found') {
+          Alert.alert('Error', 'No user found with this email.');
+        } else if (error.code === 'auth/wrong-password') {
+          Alert.alert('Error', 'Incorrect password.');
+        } else {
+          console.error('Error logging in:', error);
+          Alert.alert('Error', 'An error occurred. Please try again later.');
+        }
+      });
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      const userInfo = await GoogleSignin.signIn();
+      const {idToken} = userInfo;
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      AsyncStorage.setItem('loggedIn', 'true');
+      await auth().signInWithCredential(googleCredential);
+
+      const profileImage = userInfo.user.photo;
+      setProfileImage(profileImage);
+
+      // You can also do additional operations with other user information from 'userInfo'
+    } catch (error) {
+      console.error('Error signing in with Google:', error);
+      Alert.alert(
+        'Error',
+        'An error occurred while signing in with Google. Please try again later.',
+      );
+    }
   };
 
   return (
@@ -89,7 +154,7 @@ const LoginScreen = () => {
                 text="Login"
                 textStyle={styles.buttonText}
                 style={styles.button}
-                onPress={handleSubmit}
+                onPress={() => handleSubmit()}
               />
             </View>
             <View style={styles.buttonGoogleContainer}>
@@ -98,7 +163,7 @@ const LoginScreen = () => {
                 text="Sign In With Google"
                 textStyle={styles.buttonText}
                 style={styles.button}
-                onPress={handleSubmit}
+                onPress={() => handleGoogleSignIn()}
                 leftImageStyle={styles.google}
               />
             </View>

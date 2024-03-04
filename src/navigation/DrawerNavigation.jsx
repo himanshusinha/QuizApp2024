@@ -5,17 +5,10 @@ import {DrawerActions, useNavigation} from '@react-navigation/native';
 import colors from '../constants/colors';
 import images from '../constants/images';
 import routes from '../constants/routes';
-import BottomNavigation from './BottomNavigation';
 import CustomDrawer from '../components/customDrawer/CustomDrawer';
 import {moderateScale, textScale} from '../utils/responsiveSize';
 import fontFamily from '../utils/fontFamily';
-import {
-  AboutScreen,
-  BookmarkScreen,
-  LeaderBoardScreen,
-  QuizRulesScreen,
-  SettingsScreen,
-} from '../screens';
+import * as Screens from '../screens';
 
 const Drawer = createDrawerNavigator();
 
@@ -87,44 +80,51 @@ const DrawerNavigation = () => {
       drawerContent={props => <CustomDrawer {...props} />}>
       <Drawer.Screen
         name={routes.HOME_SCREEN}
-        component={BottomNavigation}
+        component={Screens.BottomNavigation}
         options={({route}) => ({
           headerTitle: getHeaderTitle(route.name),
         })}
       />
       <Drawer.Screen
         name={routes.LEADERBOARD_SCREEN}
-        component={LeaderBoardScreen}
+        component={Screens.LeaderBoardScreen}
         options={({route}) => ({
           headerTitle: getHeaderTitle(route.name),
         })}
       />
       <Drawer.Screen
         name={routes.ABOUT_SCREEN}
-        component={AboutScreen}
+        component={Screens.AboutScreen}
         options={({route}) => ({
           headerTitle: getHeaderTitle(route.name),
         })}
       />
       <Drawer.Screen
         name={routes.BOOKMARKS_SCREEN}
-        component={BookmarkScreen}
+        component={Screens.BookmarkScreen}
         options={({route}) => ({
           headerTitle: getHeaderTitle(route.name),
         })}
       />
       <Drawer.Screen
         name={routes.SETTINGS_SCREEN}
-        component={SettingsScreen}
+        component={Screens.SettingsScreen}
         options={({route}) => ({
           headerTitle: getHeaderTitle(route.name),
         })}
       />
       <Drawer.Screen
         name={routes.QUIZ_RULES_SCREEN}
-        component={QuizRulesScreen}
+        component={Screens.QuizRulesScreen}
         options={({route}) => ({
           headerTitle: getHeaderTitle(route.name),
+        })}
+      />
+      <Drawer.Screen
+        name={routes.TEST_SCREEN}
+        component={Screens.TestScreen}
+        options={({route}) => ({
+          headerTitle: route.params ? route.params.categoryName : 'Test',
         })}
       />
     </Drawer.Navigator>

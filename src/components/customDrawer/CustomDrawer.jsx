@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -10,16 +9,55 @@ import {
 } from 'react-native';
 import {moderateScale} from '../../utils/responsiveSize';
 import colors from '../../constants/colors';
-import images from '../../constants/images'; // Import your image assets
+import images from '../../constants/images';
 import routes from '../../constants/routes';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import styles from './styles';
 const CustomDrawer = props => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const {navigation} = props;
+  const navigation = useNavigation();
+  const [loginStatus, setLoginStatus] = useState(false);
+
+  const [userEmail, setUserEmail] = useState('');
+  const [userImage, setUserImage] = useState(null);
+  const [userName, setUserName] = useState('');
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const isSignedIn = await GoogleSignin.isSignedIn();
+      if (isSignedIn) {
+        const userInfo = await GoogleSignin.getCurrentUser();
+        setUserEmail(userInfo.user.email);
+        setUserName(userInfo.user.name);
+        setUserImage(userInfo.user.photo);
+      }
+    };
+    fetchUserInfo();
+  }, []);
+
+  const handleLogOut = async () => {
+    try {
+      await AsyncStorage.clear();
+      auth().signOut();
+      const isGoogleSignedIn = await GoogleSignin.isSignedIn();
+
+      if (isGoogleSignedIn) {
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
+      } else {
+        await auth().signOut();
+      }
+
+      setLoginStatus(false);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   const handleItemPress = item => {
     setSelectedItem(item.name);
-    // Navigate to the appropriate screen based on the item name
     switch (item.name) {
       case 'Profile':
         navigation.navigate(routes.PROFILE_SCREEN);
@@ -39,19 +77,22 @@ const CustomDrawer = props => {
       case 'About':
         navigation.navigate(routes.ABOUT_SCREEN);
         break;
+      case 'LogOut':
+        handleLogOut();
+        break;
       default:
         break;
     }
   };
 
-  // Array of objects containing item name and corresponding image source
   const menuItems = [
-    {name: 'Profile', image: images.user}, // Adjust image source accordingly
+    {name: 'Profile', image: images.user},
     {name: 'LeaderBoard', image: images.dashboard},
     {name: 'Bookmarks Questions', image: images.bookmark},
     {name: 'Settings', image: images.settings},
     {name: 'Quiz Rules', image: images.ideas},
     {name: 'About', image: images.info},
+    {name: 'LogOut', image: images.logout},
   ];
 
   const renderItem = (item, index) => {
@@ -61,21 +102,14 @@ const CustomDrawer = props => {
     return (
       <TouchableOpacity
         key={index}
-        style={{
-          width: '100%',
-          alignItems: 'center',
-          flexDirection: 'row',
-          marginTop: moderateScale(20),
-          paddingHorizontal: moderateScale(10),
-        }}
+        style={styles.touchable}
         onPress={() => handleItemPress(item)}>
         <Image
-          source={item.image} // Set the image source based on the item
-          style={{
-            width: moderateScale(20),
-            height: moderateScale(20),
-            tintColor: isSelected ? colors.blue : colors.grey,
-          }}
+          source={item.image}
+          style={[
+            styles.image,
+            {tintColor: isSelected ? colors.blue : colors.grey},
+          ]}
         />
         <Text style={{marginStart: 10, color: textColor}}>{item.name}</Text>
       </TouchableOpacity>
@@ -86,26 +120,18 @@ const CustomDrawer = props => {
     <View style={{flex: 1.5}}>
       <StatusBar backgroundColor={colors.blue} barStyle="light-content" />
       <SafeAreaView style={{flex: 0.43, backgroundColor: colors.blue}}>
-        <DrawerContentScrollView {...props}>
-          <View
-            style={{
-              backgroundColor: colors.blue,
-              height: moderateScale(150),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Image
-              source={images.quiz}
-              style={{
-                width: moderateScale(100),
-                height: moderateScale(100),
-                bottom: moderateScale(80),
-              }}
-            />
+        <View style={styles.header}>
+          <Image
+            source={userImage ? {uri: userImage} : images.quiz}
+            style={styles.userImage}
+          />
+          <View style={{bottom: moderateScale(5)}}>
+            <Text style={styles.title}>{userName}</Text>
+            <Text style={styles.title}>{userEmail}</Text>
           </View>
-        </DrawerContentScrollView>
+        </View>
 
-        <View style={{backgroundColor: colors.white}}>
+        <View style={styles.menu}>
           {menuItems.map((item, index) => renderItem(item, index))}
         </View>
       </SafeAreaView>
