@@ -1,5 +1,5 @@
 import {View, Text, Animated, Image} from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import WrapperContainer from '../../components/wrapperContainer/WrapperContainer';
 import styles from './styles';
 import {createAnimationLoop} from '../../../src/utils/animation'; // Import the animation function
@@ -8,9 +8,11 @@ import {useNavigation} from '@react-navigation/native';
 import images from '../../constants/images';
 import auth from '@react-native-firebase/auth';
 import {StackActions} from '@react-navigation/native';
+import routes from '../../constants/routes';
 
 const SplashScreen = () => {
   const scaleValue = useRef(new Animated.Value(1)).current;
+  const [initialized, setInitialized] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -19,21 +21,25 @@ const SplashScreen = () => {
 
     const timeoutId = setTimeout(() => {
       loop.stop();
-      // Navigate to the next screen after 2 seconds
-      setTimeout(() => {
-        auth().onAuthStateChanged(user => {
-          const routeName = user !== null ? 'Home' : 'Login';
+      setInitialized(true);
+    }, 2000); // Adjust the timeout as needed
 
-          navigation.dispatch(StackActions.replace(routeName));
-        });
-      }, 2000);
+    return () => {
+      clearTimeout(timeoutId);
+      loop.stop();
+    };
+  }, []);
 
-      return () => {
-        clearTimeout(timeoutId);
-        loop.stop();
-      };
-    }, [scaleValue, navigation]);
+  useEffect(() => {
+    if (initialized) {
+      auth().onAuthStateChanged(user => {
+        const routeName = user ? routes.DRAWERNAVIGATION : routes.LOGIN_SCREEN;
+        navigation.dispatch(StackActions.replace(routeName));
+      });
+    }
+  }, [initialized, navigation]);
 
+  if (!initialized) {
     return (
       <View style={styles.container}>
         <LinearGradient
@@ -46,7 +52,9 @@ const SplashScreen = () => {
         </LinearGradient>
       </View>
     );
-  });
+  }
+
+  return null;
 };
 
 export default SplashScreen;
