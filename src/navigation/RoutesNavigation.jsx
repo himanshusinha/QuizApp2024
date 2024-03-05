@@ -1,26 +1,25 @@
 import React, {useState, useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-import SplashScreen from '../screens/splash/SplashScreen'; // Import the SplashScreen component
+import SplashScreen from '../screens/splash/SplashScreen';
 import DrawerNavigation from './DrawerNavigation';
 import AuthNavigation from './AuthNavigation';
 
 const RoutesNavigation = ({user, setUser}) => {
   const [initializing, setInitializing] = useState(true);
-  const [showSplash, setShowSplash] = useState(true); // State to control showing the splash screen
+  const [showSplash, setShowSplash] = useState(true);
 
   const onAuthStateChanged = user => {
     setUser(user);
     if (initializing) setInitializing(false);
-    setShowSplash(false); // Hide splash screen once initialization is done
+    setShowSplash(false);
   };
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    return subscriber;
   }, []);
 
-  if (initializing || showSplash) return <SplashScreen />; // Show splash screen while initializing or when showSplash state is true
+  if (initializing || showSplash) return <SplashScreen />;
 
   return <>{user ? <DrawerNavigation /> : <AuthNavigation />}</>;
 };

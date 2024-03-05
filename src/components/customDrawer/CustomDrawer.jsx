@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import styles from './styles';
+
 const CustomDrawer = props => {
   const [selectedItem, setSelectedItem] = useState(null);
   const navigation = useNavigation();
@@ -24,6 +25,7 @@ const CustomDrawer = props => {
   const [userEmail, setUserEmail] = useState('');
   const [userImage, setUserImage] = useState(null);
   const [userName, setUserName] = useState('');
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       const isSignedIn = await GoogleSignin.isSignedIn();
@@ -59,8 +61,8 @@ const CustomDrawer = props => {
   const handleItemPress = item => {
     setSelectedItem(item.name);
     switch (item.name) {
-      case 'Profile':
-        navigation.navigate(routes.PROFILE_SCREEN);
+      case 'Home':
+        navigation.navigate(routes.HOME_SCREEN);
         break;
       case 'LeaderBoard':
         navigation.navigate(routes.LEADERBOARD_SCREEN);
@@ -77,6 +79,9 @@ const CustomDrawer = props => {
       case 'About':
         navigation.navigate(routes.ABOUT_SCREEN);
         break;
+      case 'Profile':
+        navigation.navigate(routes.PROFILE_SCREEN);
+        break;
       case 'LogOut':
         handleLogOut();
         break;
@@ -86,6 +91,7 @@ const CustomDrawer = props => {
   };
 
   const menuItems = [
+    {name: 'Home', image: images.house},
     {name: 'Profile', image: images.user},
     {name: 'LeaderBoard', image: images.dashboard},
     {name: 'Bookmarks Questions', image: images.bookmark},
@@ -127,7 +133,6 @@ const CustomDrawer = props => {
           />
           <View style={{bottom: moderateScale(5)}}>
             <Text style={styles.title}>{userName}</Text>
-            <Text style={styles.title}>{userEmail}</Text>
           </View>
         </View>
 

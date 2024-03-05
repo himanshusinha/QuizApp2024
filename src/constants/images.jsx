@@ -13,4 +13,11 @@ export default {
   lock: require('../assets/images/lock.png'),
   google: require('../assets/images/google.png'),
   logout: require('../assets/images/logout.png'),
+  bookmarks: require('../assets/images/bookmarks.png'),
+  menuicon: require('../assets/images/menuicon.png'),
+  left: require('../assets/images/left_chevron.png'),
+  right: require('../assets/images/right_chevron.png'),
+  question: require('../assets/images/question.png'),
+  trophy: require('../assets/images/trophy.png'),
+  stopwatch: require('../assets/images/stopwatch.png'),
 };

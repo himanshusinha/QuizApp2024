@@ -1,24 +1,33 @@
-import {Text, Dimensions, Pressable, View} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import React from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import styles from './styles';
 import * as Progress from 'react-native-progress';
 import colors from '../../../constants/colors';
+import styles from './styles';
+import routes from '../../../constants/routes';
 
-const ItemTest = ({item}) => {
+const ItemTest = ({item, index}) => {
   const navigation = useNavigation();
-  const routes = useRoute();
-  const category = routes?.params?.categoryName;
+  const routess = useRoute();
+  const category = routess?.params?.categoryName;
   console.log(category);
-  const progress = parseInt(item.topscore) / 100;
+
+  const progress = 0.0;
 
   return (
-    <Pressable onPress={() => {}} style={styles.card}>
-      <Text style={styles.test}>{item.title}</Text>
+    <Pressable
+      onPress={() => {
+        navigation.navigate(routes.START_TEST_SCREEN, {
+          categoryName: category,
+          testNumber: index + 1,
+        });
+      }}
+      style={styles.card}>
+      <Text style={styles.test}>{`Test ${index + 1}`}</Text>
       <View style={styles.progressBar}>
         <Progress.Bar progress={progress} width={250} color={colors.blue} />
         <View style={styles.score}>
-          <Text style={styles.scoreText}>{item.topscore + '%'}</Text>
+          <Text style={styles.scoreText}>{'0 %'}</Text>
         </View>
       </View>
     </Pressable>
