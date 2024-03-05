@@ -17,13 +17,14 @@ const ButtonComp = ({
   leftImageStyle = {},
   isLoading = false,
   buttonDisabled,
+  activeOpacity,
 }) => {
   return (
     <TouchableOpacity
+      activeOpacity={activeOpacity}
       disabled={buttonDisabled}
       style={{...styles.container, ...style}}
-      onPress={onPress}
-      activeOpacity={0.7}>
+      onPress={onPress}>
       {!!leftImg && (
         <Image
           source={leftImg}

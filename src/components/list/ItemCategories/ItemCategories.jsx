@@ -1,14 +1,14 @@
-import {View, Text, Dimensions, Pressable} from 'react-native';
 import React, {useEffect} from 'react';
+import {View, Text, Dimensions, Pressable} from 'react-native';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 import routes from '../../../constants/routes';
 
-const ItemCategories = ({item, index}) => {
+const ItemCategories = ({item}) => {
   const {width} = Dimensions.get('window');
   const cardWidth = (width - 80) / 2;
   const navigation = useNavigation();
-
+  console.log(item, '....item');
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
       // Reset the drawer title when the component is unmounted
@@ -19,8 +19,11 @@ const ItemCategories = ({item, index}) => {
   }, [navigation]);
 
   const navigateToTestScreen = () => {
-    // Pass the category name to the test screen drawer title
-    navigation.navigate(routes.TEST_SCREEN, {categoryName: item.NAME});
+    // Pass the category ID to the TestScreen
+    navigation.navigate(routes.TEST_SCREEN, {
+      categoryId: item.CAT_ID,
+      categoryName: item.NAME,
+    });
   };
 
   return (

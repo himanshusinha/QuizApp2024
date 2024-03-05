@@ -10,3 +10,6 @@ export {default as QuizRulesScreen} from '../screens/dashboard/quizRules/QuizRul
 export {default as LoginScreen} from '../screens/auth/login/LoginScreen';
 export {default as SignUpScreen} from '../screens/auth/signup/SignUpScreen';
 export {default as TestScreen} from '../screens/dashboard/test/TestScreen';
+export {default as DrawerNavigation} from '../navigation/DrawerNavigation';
+export {default as QuizScreen} from '../screens/dashboard/quiz/QuizScreen';
+export {default as StartTestScreen} from '../screens/dashboard/startTest/StartTestScreen';

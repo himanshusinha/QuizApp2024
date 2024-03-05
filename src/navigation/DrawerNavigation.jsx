@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {Image, TouchableOpacity, Text} from 'react-native';
+import {Image, TouchableOpacity, Text, View, Platform} from 'react-native';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
 import colors from '../constants/colors';
 import images from '../constants/images';
@@ -9,6 +9,7 @@ import CustomDrawer from '../components/customDrawer/CustomDrawer';
 import {moderateScale, textScale} from '../utils/responsiveSize';
 import fontFamily from '../utils/fontFamily';
 import * as Screens from '../screens';
+import ButtonComp from '../components/button/ButtonComp';
 
 const Drawer = createDrawerNavigator();
 
@@ -38,7 +39,7 @@ const DrawerNavigation = () => {
   // Function to get header title based on route name
   const getHeaderTitle = routeName => {
     switch (routeName) {
-      case routes.HOME_SCREEN:
+      case routes.BOTTOM_NAVIGATION:
         return 'Home';
       case routes.LEADERBOARD_SCREEN:
         return 'Leaderboard';
@@ -125,6 +126,80 @@ const DrawerNavigation = () => {
         component={Screens.TestScreen}
         options={({route}) => ({
           headerTitle: route.params ? route.params.categoryName : 'Test',
+        })}
+      />
+      <Drawer.Screen
+        name={routes.START_TEST_SCREEN}
+        component={Screens.StartTestScreen}
+        options={({route}) => ({
+          headerTitle: route.params ? route.params.categoryName : 'Category',
+        })}
+      />
+      <Drawer.Screen
+        name={routes.QUIZ_SCREEN}
+        component={Screens.QuizScreen}
+        options={({route}) => ({
+          headerTitle: route.params ? route.params.categoryName : '',
+          headerLeft: props => (
+            <View
+              style={{
+                marginStart: moderateScale(20),
+                bottom: Platform.OS === 'ios' ? moderateScale(10) : 0,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+                  color: colors.white,
+                  top: moderateScale(5),
+                  fontSize: textScale(14),
+                }}>
+                1 /{' '}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+                  color: colors.white,
+                  top: moderateScale(5),
+                  fontSize: textScale(14),
+                }}>
+                5
+              </Text>
+              <View
+                style={{
+                  marginStart: moderateScale(70),
+                  justifyContent: 'space-between',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+                    color: colors.teal,
+                    top: moderateScale(5),
+                    fontSize: textScale(14),
+                  }}>
+                  24:55 min
+                </Text>
+                <ButtonComp
+                  activeOpacity={0.9}
+                  text="Submit"
+                  textStyle={{
+                    fontSize: textScale(12),
+                    fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+                  }}
+                  style={{
+                    width: moderateScale(120),
+                    backgroundColor: colors.yellow,
+                    height: moderateScale(35),
+                    marginStart: moderateScale(80),
+                    top: moderateScale(5),
+                  }}
+                />
+              </View>
+            </View>
+          ),
         })}
       />
     </Drawer.Navigator>

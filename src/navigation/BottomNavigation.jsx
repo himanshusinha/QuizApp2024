@@ -1,11 +1,13 @@
 import React from 'react';
-import {Image} from 'react-native';
+import {Image, Text, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import colors from '../constants/colors';
 import routes from '../constants/routes';
 import images from '../constants/images';
 import styles from './styles';
 import * as Screens from '../screens';
+import fontFamily from '../utils/fontFamily';
+import {moderateScale} from '../utils/responsiveSize';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,11 +27,24 @@ const BottomNavigation = () => {
         component={Screens.HomeScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Image
-              style={styles.image}
-              source={images.house}
-              tintColor={focused ? colors.black : colors.grey}
-            />
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                style={[
+                  styles.image,
+                  {tintColor: focused ? colors.blue : colors.grey},
+                ]}
+                source={images.house}
+                tintColor={focused ? colors.blue : colors.grey}
+              />
+              <Text
+                style={{
+                  color: focused ? colors.blue : colors.grey,
+                  fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+                  top: moderateScale(10),
+                }}>
+                Home
+              </Text>
+            </View>
           ),
         }}
       />
@@ -39,11 +54,24 @@ const BottomNavigation = () => {
         component={Screens.LeaderBoardScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Image
-              style={styles.image}
-              source={images.dashboard}
-              tintColor={focused ? colors.black : colors.grey}
-            />
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                style={[
+                  styles.image,
+                  {tintColor: focused ? colors.blue : colors.grey},
+                ]}
+                source={images.dashboard}
+                tintColor={focused ? colors.blue : colors.grey}
+              />
+              <Text
+                style={{
+                  color: focused ? colors.blue : colors.grey,
+                  fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+                  top: moderateScale(10),
+                }}>
+                LeaderBoard
+              </Text>
+            </View>
           ),
         }}
       />
@@ -53,11 +81,24 @@ const BottomNavigation = () => {
         component={Screens.ProfileScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Image
-              style={styles.image}
-              source={images.user}
-              tintColor={focused ? colors.black : colors.grey}
-            />
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                style={[
+                  styles.image,
+                  {tintColor: focused ? colors.blue : colors.grey},
+                ]}
+                source={images.user}
+                tintColor={focused ? colors.blue : colors.grey}
+              />
+              <Text
+                style={{
+                  color: focused ? colors.blue : colors.grey,
+                  fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+                  top: moderateScale(10),
+                }}>
+                Profile
+              </Text>
+            </View>
           ),
         }}
       />
