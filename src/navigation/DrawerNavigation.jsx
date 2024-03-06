@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Image, TouchableOpacity, Text, View, Platform} from 'react-native';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
@@ -10,11 +10,54 @@ import {moderateScale, textScale} from '../utils/responsiveSize';
 import fontFamily from '../utils/fontFamily';
 import * as Screens from '../screens';
 import ButtonComp from '../components/button/ButtonComp';
+import {firebase} from '@react-native-firebase/auth';
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigation = () => {
+const DrawerNavigation = ({testTime}) => {
+  const [questionData, setQuestionData] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const querySnapshot = await firebase
+          .firestore()
+          .collection('Questions')
+          .get();
+        const fetchedQuestions = querySnapshot.docs.map(doc => doc.data());
+        setQuestionData(fetchedQuestions);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  const startTimer = async () => {
+    try {
+      const testInfoSnapshot = await firebase
+        .firestore()
+        .doc('QUIZ/OVVqzp5xqIomntt8l5Jn/TEST_LIST/TEST_INFO')
+        .get();
+
+      if (testInfoSnapshot.exists) {
+        const testInfoData = testInfoSnapshot.data();
+        if (testInfoData && testInfoData.CAT1_TIME) {
+          setTimer(testInfoData.CAT1_TIME); // Set the timer from firebase
+        } else {
+          console.error('CAT1_TIME field not found in TEST_INFO document');
+        }
+      } else {
+        console.error('TEST_INFO document does not exist');
+      }
+    } catch (error) {
+      console.error('Error fetching test time:', error);
+    }
+  };
 
   // Function to get drawer label based on route name
   const getDrawerLabel = routeName => {
@@ -139,66 +182,24 @@ const DrawerNavigation = () => {
         name={routes.QUIZ_SCREEN}
         component={Screens.QuizScreen}
         options={({route}) => ({
-          headerTitle: route.params ? route.params.categoryName : '',
-          headerLeft: props => (
-            <View
+          headerTitle: route.params ? route.params.category : 'Category',
+          headerRight: props => (
+            <ButtonComp
+              activeOpacity={0.9}
+              text="Submit"
+              textStyle={{
+                fontSize: textScale(12),
+                fontFamily: fontFamily.POPPINS_SEMI_BOLD,
+              }}
               style={{
-                marginStart: moderateScale(20),
-                bottom: Platform.OS === 'ios' ? moderateScale(10) : 0,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontFamily: fontFamily.POPPINS_SEMI_BOLD,
-                  color: colors.white,
-                  top: moderateScale(5),
-                  fontSize: textScale(14),
-                }}>
-                1 /{' '}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fontFamily.POPPINS_SEMI_BOLD,
-                  color: colors.white,
-                  top: moderateScale(5),
-                  fontSize: textScale(14),
-                }}>
-                5
-              </Text>
-              <View
-                style={{
-                  marginStart: moderateScale(70),
-                  justifyContent: 'space-between',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: fontFamily.POPPINS_SEMI_BOLD,
-                    color: colors.teal,
-                    top: moderateScale(5),
-                    fontSize: textScale(14),
-                  }}>
-                  24:55 min
-                </Text>
-                <ButtonComp
-                  activeOpacity={0.9}
-                  text="Submit"
-                  textStyle={{
-                    fontSize: textScale(12),
-                    fontFamily: fontFamily.POPPINS_SEMI_BOLD,
-                  }}
-                  style={{
-                    width: moderateScale(120),
-                    backgroundColor: colors.yellow,
-                    height: moderateScale(35),
-                    marginStart: moderateScale(80),
-                    top: moderateScale(5),
-                  }}
-                />
-              </View>
-            </View>
+                width: moderateScale(100),
+                backgroundColor: colors.yellow,
+                height: moderateScale(35),
+                marginStart: moderateScale(80),
+                bottom: moderateScale(5),
+                marginEnd: moderateScale(10),
+              }}
+            />
           ),
         })}
       />
