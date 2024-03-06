@@ -6,6 +6,7 @@ import ItemStart from '../../../components/list/ItemStart/ItemStart';
 import styles from './styles';
 import ButtonComp from '../../../components/button/ButtonComp';
 import routes from '../../../constants/routes';
+import {firebase} from '@react-native-firebase/auth';
 
 const StartTestScreen = () => {
   const navigation = useNavigation();
@@ -14,10 +15,8 @@ const StartTestScreen = () => {
   const testNumber = routess?.params?.testNumber;
   console.log(testNumber);
   console.log(category);
-  const [testTime, setTestTime] = useState(0); // State to store test time
+  const [testTime, setTestTime] = useState(0);
   console.log(testTime);
-  const [questions, setQuestions] = useState([]);
-  console.log(questions);
   useEffect(() => {
     const fetchTestTime = async () => {
       try {
@@ -30,6 +29,7 @@ const StartTestScreen = () => {
           const testInfoData = testInfoSnapshot.data();
           if (testInfoData && testInfoData.CAT1_TIME) {
             console.log('Test Time:', testInfoData.CAT1_TIME);
+            setTestTime(testInfoData.CAT1_TIME); // Set the test time from Firebase
           } else {
             console.error('CAT1_TIME field not found in TEST_INFO document');
           }
@@ -43,6 +43,7 @@ const StartTestScreen = () => {
 
     fetchTestTime();
   }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.testNumber}>{`Test ${testNumber}`}</Text>
@@ -52,13 +53,20 @@ const StartTestScreen = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => <ItemStart item={item} index={index} />}
+        renderItem={({item, index}) => (
+          <ItemStart item={item} index={index} testTime={testTime} />
+        )}
         contentContainerStyle={styles.flatListContent}
         scrollEnabled={false}
       />
       <View style={styles.buttonContainer}>
         <ButtonComp
-          onPress={() => navigation.navigate(routes.QUIZ_SCREEN)}
+          onPress={() => {
+            navigation.navigate(routes.QUIZ_SCREEN, {
+              category: category,
+              testTime: testTime,
+            });
+          }}
           activeOpacity={0.9}
           text="START"
           textStyle={styles.buttonText}

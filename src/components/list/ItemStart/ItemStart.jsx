@@ -6,7 +6,7 @@ import {firebase} from '@react-native-firebase/auth';
 const ItemStart = ({item, index}) => {
   const {width} = Dimensions.get('window');
   const cardWidth = (width - 20 * 4.8) / 3;
-  const [testTime, setTestTime] = useState(0); // State to store test time
+  const [testTime, setTestTime] = useState(0);
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
