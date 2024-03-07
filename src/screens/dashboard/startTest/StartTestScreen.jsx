@@ -1,5 +1,6 @@
-import {View, FlatList, Text} from 'react-native';
+// StartTestScreen.js
 import React, {useEffect, useState} from 'react';
+import {View, Text, FlatList} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {quizData} from '../../../constants/list';
 import ItemStart from '../../../components/list/ItemStart/ItemStart';
@@ -10,28 +11,28 @@ import {firebase} from '@react-native-firebase/auth';
 
 const StartTestScreen = () => {
   const navigation = useNavigation();
-  const routess = useRoute();
-  const category = routess?.params?.categoryName;
-  const testNumber = routess?.params?.testNumber;
-  console.log(testNumber);
-  console.log(category);
+  const route = useRoute();
+  const category = route?.params?.categoryName;
+  const categoryId = route?.params?.categoryId;
+  const selectedTest = route?.params?.testNumber;
+  console.log(selectedTest, '.....selected test in start test');
   const [testTime, setTestTime] = useState(0);
-  console.log(testTime);
+
   useEffect(() => {
     const fetchTestTime = async () => {
       try {
         const testInfoSnapshot = await firebase
           .firestore()
-          .doc('QUIZ/OVVqzp5xqIomntt8l5Jn/TEST_LIST/TEST_INFO')
+          .doc(`QUIZ/${categoryId}/TEST_LIST/TEST_INFO`)
           .get();
 
         if (testInfoSnapshot.exists) {
           const testInfoData = testInfoSnapshot.data();
-          if (testInfoData && testInfoData.CAT1_TIME) {
-            console.log('Test Time:', testInfoData.CAT1_TIME);
-            setTestTime(testInfoData.CAT1_TIME); // Set the test time from Firebase
+          const key = `CAT${selectedTest}_TIME`;
+          if (testInfoData && testInfoData[key]) {
+            setTestTime(testInfoData[key]);
           } else {
-            console.error('CAT1_TIME field not found in TEST_INFO document');
+            console.error(`${key} not found in TEST_INFO document`);
           }
         } else {
           console.error('TEST_INFO document does not exist');
@@ -42,19 +43,24 @@ const StartTestScreen = () => {
     };
 
     fetchTestTime();
-  }, []);
+  }, [categoryId, selectedTest]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.testNumber}>{`Test ${testNumber}`}</Text>
-
+      <Text style={styles.testNumber}>{`Test ${selectedTest}`}</Text>
       <FlatList
         data={quizData}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => (
-          <ItemStart item={item} index={index} testTime={testTime} />
+          <ItemStart
+            item={item}
+            index={index}
+            categoryId={categoryId}
+            selectedTest={selectedTest}
+            testTime={testTime}
+          />
         )}
         contentContainerStyle={styles.flatListContent}
         scrollEnabled={false}
@@ -64,7 +70,9 @@ const StartTestScreen = () => {
           onPress={() => {
             navigation.navigate(routes.QUIZ_SCREEN, {
               category: category,
+              categoryId: categoryId,
               testTime: testTime,
+              selectedTest: selectedTest,
             });
           }}
           activeOpacity={0.9}

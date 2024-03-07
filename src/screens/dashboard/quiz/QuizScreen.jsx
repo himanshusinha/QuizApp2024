@@ -24,26 +24,26 @@ const QuizScreen = () => {
   const category = routess?.params?.category;
   const [remainingTime, setRemainingTime] = useState(0);
   const testTime = routess?.params?.testTime;
+  const selectedTest = routess?.params?.selectedTest;
+  // const startTimer = timeInSeconds => {
+  //   setRemainingTime(timeInSeconds);
+  // };
 
-  const startTimer = timeInSeconds => {
-    setRemainingTime(timeInSeconds);
-  };
+  // useEffect(() => {
+  //   startTimer(testTime * 60);
+  // }, [testTime]);
 
-  useEffect(() => {
-    startTimer(testTime * 60);
-  }, [testTime]);
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setRemainingTime(prevTime => prevTime - 1);
+  //   }, 1000);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setRemainingTime(prevTime => prevTime - 1);
-    }, 1000);
+  //   if (remainingTime === 0) {
+  //     clearInterval(timer);
+  //   }
 
-    if (remainingTime === 0) {
-      clearInterval(timer);
-    }
-
-    return () => clearInterval(timer);
-  }, [remainingTime]);
+  //   return () => clearInterval(timer);
+  // }, [remainingTime]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -51,6 +51,7 @@ const QuizScreen = () => {
         const querySnapshot = await firebase
           .firestore()
           .collection('Questions')
+          .where('TEST', '==', category) // Filter questions based on the selected test
           .get();
         const fetchedQuestions = querySnapshot.docs.map(doc => doc.data());
         setQuestionData(fetchedQuestions);
@@ -60,7 +61,7 @@ const QuizScreen = () => {
     };
 
     fetchQuestions();
-  }, []);
+  }, [selectedTest]);
 
   const handleOptionSelect = option => {
     const updatedQuestions = [...questionData];
@@ -134,6 +135,13 @@ const QuizScreen = () => {
       </Pressable>
     );
   };
+  if (questionData.length === 0) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>No questions available for this test.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
@@ -161,7 +169,7 @@ const QuizScreen = () => {
             fontFamily: fontFamily.POPPINS_SEMI_BOLD,
             color: colors.white,
           }}>
-          {currentQuestionIndex + 1} / {questionData.length}
+          {questionData.length}
         </Text>
         <Image
           source={images.bookmarks}

@@ -182,7 +182,7 @@ const DrawerNavigation = ({testTime}) => {
         name={routes.QUIZ_SCREEN}
         component={Screens.QuizScreen}
         options={({route}) => ({
-          headerTitle: route.params ? route.params.category : 'Category',
+          headerTitle: route.params ? '' : 'Category',
           headerRight: props => (
             <ButtonComp
               activeOpacity={0.9}

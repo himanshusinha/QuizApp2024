@@ -9,7 +9,6 @@ import ItemTest from '../../../components/list/ItemTest/ItemTest';
 const TestScreen = () => {
   const route = useRoute();
   const {categoryId, categoryName} = route.params;
-  console.log(categoryName);
   const navigation = useNavigation();
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +40,7 @@ const TestScreen = () => {
               TEST_INFO: testData[`CAT${i}_ID`],
               CAT_ID: testData[`CAT${i}_ID`],
               TIME: testData[`CAT${i}_TIME`],
+              category: categoryName,
             });
           }
           testsData.push(...testArray);
@@ -53,14 +53,19 @@ const TestScreen = () => {
     };
 
     fetchTests();
-  }, [categoryId]);
+  }, [categoryId, categoryName]);
 
   return (
     <WrapperContainer style={styles.container}>
       {!loading && tests.length > 0 && (
         <FlatList
           data={tests}
-          renderItem={({item, index}) => <ItemTest item={item} index={index} />}
+          renderItem={({item, index}) => {
+            console.log('FlatList item:', item); // Log the item
+            return (
+              <ItemTest item={item} index={index} categoryId={categoryId} />
+            );
+          }}
           keyExtractor={(item, index) => index.toString()}
         />
       )}

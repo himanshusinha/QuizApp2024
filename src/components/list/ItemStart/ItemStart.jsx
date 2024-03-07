@@ -1,40 +1,14 @@
-import {View, Text, Dimensions, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {View, Text, Dimensions, Image} from 'react-native';
 import styles from './styles';
 import {firebase} from '@react-native-firebase/auth';
 
-const ItemStart = ({item, index}) => {
+const ItemStart = ({item, categoryId, selectedTest, testTime}) => {
   const {width} = Dimensions.get('window');
   const cardWidth = (width - 20 * 4.8) / 3;
-  const [testTime, setTestTime] = useState(0);
   const [questions, setQuestions] = useState([]);
-
-  useEffect(() => {
-    const fetchTestTime = async () => {
-      try {
-        const testInfoSnapshot = await firebase
-          .firestore()
-          .doc('QUIZ/OVVqzp5xqIomntt8l5Jn/TEST_LIST/TEST_INFO')
-          .get();
-
-        if (testInfoSnapshot.exists) {
-          const testInfoData = testInfoSnapshot.data();
-          if (testInfoData && testInfoData.CAT1_TIME) {
-            // Set the test time state with the fetched value
-            setTestTime(testInfoData.CAT1_TIME);
-          } else {
-            console.error('CAT1_TIME field not found in TEST_INFO document');
-          }
-        } else {
-          console.error('TEST_INFO document does not exist');
-        }
-      } catch (error) {
-        console.error('Error fetching test time:', error);
-      }
-    };
-
-    fetchTestTime();
-  }, []);
+  console.log(questions, '.....questions');
+  console.log('Test Number:', selectedTest);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -42,20 +16,35 @@ const ItemStart = ({item, index}) => {
         const querySnapshot = await firebase
           .firestore()
           .collection('Questions')
+          .where('TEST', '==', 'AAA')
           .get();
-        const fetchedQuestions = querySnapshot.docs.map(doc => doc.data());
-        setQuestions(fetchedQuestions);
+
+        if (querySnapshot.empty) {
+          console.log(
+            'No matching documents found for selected test and category:',
+            selectedTest,
+          );
+        } else {
+          const fetchedQuestions = querySnapshot.docs.map(doc => doc.data());
+          console.log('Fetched Questions:', fetchedQuestions);
+          setQuestions(fetchedQuestions);
+        }
       } catch (error) {
         console.error('Error fetching questions:', error);
       }
     };
 
     fetchQuestions();
-  }, []);
+  }, [categoryId]);
+
+  useEffect(() => {
+    console.log('Test Time:', testTime); // Log testTime prop
+  }, [testTime]); // Log when testTime prop changes
 
   let sub_title;
   if (item.title === 'Questions') {
     sub_title = questions.length;
+    console.log(sub_title);
   } else if (item.title === 'Best Score') {
     sub_title = 0;
   } else if (item.title === 'Time') {
